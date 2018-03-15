@@ -221,6 +221,41 @@ class WechatAutoJump(object):
         cv2.circle(current_state, (self.target_pos[1], self.target_pos[0]), 5, (0,0,255), -1)
         cv2.imwrite(os.path.join(self.debug, 'state_{:03d}_res_h_{}_w_{}.png'.format(self.step, self.target_pos[0], self.target_pos[1])), current_state)
 
+    # Added by yichen
+    def personification(self):
+        if self.step % 70 == 0:
+            next_rest = 18
+            rest=True
+        elif self.step % 40 == 0:
+            next_rest = 13
+            rest=True
+        elif self.step % 20 == 0:
+            next_rest = 11
+            rest=True
+        elif self.step % 10 == 0:
+            next_rest = 8
+            rest=True
+        else:
+            rest=False
+
+        if rest:
+            for rest_time in range(next_rest):
+                sys.stdout.write('\r程序将在 {}s 后继续' .format(next_rest-rest_time))
+                sys.stdout.flush()
+                time.sleep(1)
+            print('\n继续')
+
+        time.sleep(random.uniform(1.5, 3.0))
+
+        if self.step % 5 == 0:
+            self.sensitivity = 2.145
+        elif self.step % 7 == 0:
+            self.sensitivity = 2.000
+        elif self.step % 9 == 0:
+            self.sensitivity = 1.985
+        elif self.step % 3 == 0:
+            self.sensitivity = 1.970
+
     def play(self):
         # 获取 1280*720大小的屏幕截图
         self.state = self.get_current_state()
@@ -242,43 +277,11 @@ class WechatAutoJump(object):
             self.debugging()
 
         # 触发跳跃动作
-
-        if self.step % 70 == 0:
-            next_rest = 18
-            rest=True
-        elif self.step % 40 == 0:
-            next_rest = 13
-            rest=True
-        elif self.step % 20 == 0:
-            next_rest = 11
-            rest=True
-        elif self.step % 10 == 0:
-            next_rest = 8
-            rest=True
-        else:
-            rest=False
-
-        if rest:
-           for rest_time in range(next_rest):
-               sys.stdout.write('\r程序将在 {}s 后继续' .format(next_rest-rest_time))
-               sys.stdout.flush()
-               time.sleep(1)
-           print('\n继续')
-
         self.jump(self.player_pos, self.target_pos)
         self.step += 1
 
-        # time.sleep(1.5)
-        time.sleep(random.uniform(1.5, 3.0))
+        time.sleep(1.5)
 
-        if self.step % 5 == 0:
-            self.sensitivity = 2.145
-        elif self.step % 7 == 0:
-            self.sensitivity = 2.000
-        elif self.step % 9 == 0:
-            self.sensitivity = 1.985
-        elif self.step % 3 == 0:
-            self.sensitivity = 1.970
 
     def run(self):
         try:
@@ -290,8 +293,7 @@ class WechatAutoJump(object):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--phone', default='Android', choices=['Android', 'IOS'], type=str, help='mobile phone OS')
-    #parser.add_argument('--sensitivity', default=2.045, type=float, help='constant for press time')
-    parser.add_argument('--sensitivity', default=2.157, type=float, help='constant for press time')
+    parser.add_argument('--sensitivity', default=2.045, type=float, help='constant for press time')
     parser.add_argument('--serverURL', default='http://localhost:8100', type=str, help='ServerURL for wda Client')
     parser.add_argument('--resource', default='resource', type=str, help='resource dir')
     parser.add_argument('--debug', default=None, type=str, help='debug mode, specify a directory for storing log files.')
