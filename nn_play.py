@@ -99,6 +99,7 @@ class WechatAutoJump(object):
 
         # 初始化并运行 self.sess
         self.sess = tf.Session()
+        # 对所有的图变量进行集体初始化并开始运行
         self.sess.run(tf.global_variables_initializer())
 
         all_vars = tf.all_variables()

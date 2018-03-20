@@ -10,11 +10,15 @@ class JumpModel:
         self.input_channle = 3
         self.out_channel = 2
 
+    # 实现卷积
     def conv2d(self, name, input, ks, stride):
         with tf.name_scope(name):
             with tf.variable_scope(name):
+                # 使用 截断正态分布的方法 初始化w
                 w = tf.get_variable('%s-w' % name, shape=ks, initializer=tf.truncated_normal_initializer())
+                # 使用 tf.constant() 初始化b
                 b = tf.get_variable('%s-b' % name, shape=[ks[-1]], initializer=tf.constant_initializer())
+                # 计算 tensorflow 卷积, 卷积核: W, 偏移量：b
                 out = tf.nn.conv2d(input, w, strides=[1, stride, stride, 1], padding='SAME', name='%s-conv' % name)
                 out = tf.nn.bias_add(out, b, name='%s-biad_add' % name)
         return out
